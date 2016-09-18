@@ -17,7 +17,7 @@ import org.apache.camel.impl.DefaultCamelContext;
 
 public class JavaRouter {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		CamelContext context = new DefaultCamelContext();
 		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost");
 		context.addComponent("jms", JmsComponent.jmsComponentAutoAcknowledge(connectionFactory));
@@ -34,12 +34,15 @@ public class JavaRouter {
 		while (message != null) {
 			if (message instanceof ObjectMessage) {
 				Serializable object = ((ObjectMessage) message).getObject();
-				
-				
-				
+				System.out
+						.println("************** Got Message: "
+								+ object);
+							
 			}
+			message = consumer.receive(10);
 		}
 		
+		consumer.close();
 		session.close();
 		connection.close();
 		context.stop();
